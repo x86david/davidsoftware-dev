@@ -3,7 +3,7 @@ name: Deploy Angular to GitHub Pages
 on:
   push:
     branches:
-      - master # Change to master if your default branch is master
+      - master
 
 permissions:
   contents: read
@@ -21,23 +21,25 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js (22 LTS)
+      - name: Setup Node.js (Matching Local Environment)
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24' # Matches your local v24.21.0 and resolves GitHub's deprecation warnings
           cache: 'npm'
+
+      - name: Update npm (Optional but safe)
+        # Ensures the runner matches your local npm v11.19.0
+        run: npm install -g npm@11.19.0
 
       - name: Install Dependencies
         run: npm ci
 
       - name: Build Angular App
-        # Change /my-angular-app/ to your real repository name: /davidsoftware-dev/
         run: npm run build -- --configuration production --base-href /davidsoftware-dev/
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Targets the exact Angular compilation output folder
           path: 'dist/my-angular-app/browser/.'
 
   deploy:
