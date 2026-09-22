@@ -31,8 +31,8 @@ jobs:
         run: npm ci
 
       - name: Build Angular App
-        # CRITICAL: We added your exact repository name between slashes here
-        run: npm run build -- --configuration production --base-href /my-angular-app/
+        # Change /my-angular-app/ to your real repository name: /davidsoftware-dev/
+        run: npm run build -- --configuration production --base-href /davidsoftware-dev/
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
