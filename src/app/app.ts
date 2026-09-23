@@ -1,33 +1,30 @@
-import { Component, HostListener, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-export class App {
-  protected readonly title = signal('my-angular-app');
-
-  // Scroll properties for hero background & header eye-candy
-  blurValue = 0;
-  scaleValue = 1.05;
-  scrollProgress = 0;
+export class AppComponent {
   isScrolled = false;
+  scrollProgress = 0;
+  blurValue = 0;
+  scaleValue = 1;
 
-  @HostListener('window:scroll')
+  @HostListener('window:scroll', [])
   onWindowScroll() {
-    const scrollPosition = window.scrollY;
-    
-    // Hero background dynamic blur & scale
-    this.blurValue = Math.min(scrollPosition / 30, 12);
-    this.scaleValue = 1.05 + Math.min(scrollPosition / 2000, 0.05);
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
 
-    // Header eye-candy state & progress bar calculation
+    // 1. Toggle header styling state when scrolled past 20px
     this.isScrolled = scrollPosition > 20;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+    // 2. Calculate reading progress bar percentage
+    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     this.scrollProgress = docHeight > 0 ? (scrollPosition / docHeight) * 100 : 0;
+
+    // 3. Calculate hero background dynamic blur & scale effects
+    this.blurValue = Math.min(scrollPosition * 0.03, 12); // Caps blur at 12px
+    this.scaleValue = 1 + scrollPosition * 0.0005;        // Subtle zoom effect on scroll
   }
 
   // Web3Forms Contact Submission Handler
@@ -35,7 +32,7 @@ export class App {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-    
+
     if (!submitBtn) return;
 
     const formData = new FormData(form);
