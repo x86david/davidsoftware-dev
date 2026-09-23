@@ -1,15 +1,27 @@
-import { Component, signal } from '@angular/core';
+import { Component, HostListener, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.css',
+  imports: [RouterOutlet],
   templateUrl: './app.html',
+  styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('my-angular-app');
 
+  // Scroll blur properties for the hero background
+  blurValue = 0;
+  scaleValue = 1.05;
+
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    const scrollPosition = window.scrollY;
+    this.blurValue = Math.min(scrollPosition / 30, 12);
+    this.scaleValue = 1.05 + Math.min(scrollPosition / 2000, 0.05);
+  }
+
+  // Web3Forms Contact Submission Handler
   async onSubmit(e: Event) {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
