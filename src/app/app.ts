@@ -30,6 +30,14 @@ export class App {
     this.scrollProgress = docHeight > 0 ? (scrollPosition / docHeight) * 100 : 0;
   }
 
+  // Smooth scroll back to the top of the page
+  scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
   // Web3Forms Contact Submission Handler
   async onSubmit(e: Event) {
     e.preventDefault();
