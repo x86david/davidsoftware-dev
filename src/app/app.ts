@@ -10,15 +10,24 @@ import { RouterOutlet } from '@angular/router';
 export class App {
   protected readonly title = signal('my-angular-app');
 
-  // Scroll blur properties for the hero background
+  // Scroll properties for hero background & header eye-candy
   blurValue = 0;
   scaleValue = 1.05;
+  scrollProgress = 0;
+  isScrolled = false;
 
   @HostListener('window:scroll')
   onWindowScroll() {
     const scrollPosition = window.scrollY;
+    
+    // Hero background dynamic blur & scale
     this.blurValue = Math.min(scrollPosition / 30, 12);
     this.scaleValue = 1.05 + Math.min(scrollPosition / 2000, 0.05);
+
+    // Header eye-candy state & progress bar calculation
+    this.isScrolled = scrollPosition > 20;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    this.scrollProgress = docHeight > 0 ? (scrollPosition / docHeight) * 100 : 0;
   }
 
   // Web3Forms Contact Submission Handler
