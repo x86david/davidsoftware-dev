@@ -1,30 +1,33 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  styleUrl: './app.css'
 })
-export class AppComponent {
-  isScrolled = false;
-  scrollProgress = 0;
+export class App {
+  protected readonly title = signal('my-angular-app');
+
+  // Scroll properties for hero background & header eye-candy
   blurValue = 0;
-  scaleValue = 1;
+  scaleValue = 1.05;
+  scrollProgress = 0;
+  isScrolled = false;
 
-  @HostListener('window:scroll', [])
+  @HostListener('window:scroll')
   onWindowScroll() {
-    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const scrollPosition = window.scrollY;
 
-    // 1. Toggle header styling state when scrolled past 20px
+    // Hero background dynamic blur & scale
+    this.blurValue = Math.min(scrollPosition / 30, 12);
+    this.scaleValue = 1.05 + Math.min(scrollPosition / 2000, 0.05);
+
+    // Header eye-candy state & progress bar calculation
     this.isScrolled = scrollPosition > 20;
-
-    // 2. Calculate reading progress bar percentage
-    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
     this.scrollProgress = docHeight > 0 ? (scrollPosition / docHeight) * 100 : 0;
-
-    // 3. Calculate hero background dynamic blur & scale effects
-    this.blurValue = Math.min(scrollPosition * 0.03, 12); // Caps blur at 12px
-    this.scaleValue = 1 + scrollPosition * 0.0005;        // Subtle zoom effect on scroll
   }
 
   // Web3Forms Contact Submission Handler
